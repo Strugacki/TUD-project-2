@@ -6,12 +6,18 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Column;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name="PRODUCT")
+@NamedQueries({
+	@NamedQuery(name = "getAllProducts", query = "Select p from PRODUCT p"),
+	@NamedQuery(name = "getProductByBrandName", query = "Select p from PRODUCT p Where p.BRAND_NAME=?"),
+})
 public class Product implements Serializable{
 
 	@Id

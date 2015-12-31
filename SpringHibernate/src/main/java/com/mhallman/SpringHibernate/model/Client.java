@@ -15,8 +15,8 @@ import javax.persistence.NamedQuery;
 @Entity
 @Table(name = "CLIENT")
 @NamedQueries({
-	@NamedQuery(name = "getAllClients", query = "Select c from Client c"),
-	@NamedQuery(name = "getByPhone", query = "Select c from Client c Where c.phone=?"),
+	@NamedQuery(name = "getAllClients", query = "Select c from CLIENT c"),
+	@NamedQuery(name = "getByPhone", query = "Select c from CLIENT c Where c.PHONE_NUMBER=?"),
 })
 public class Client implements Serializable{
 	
