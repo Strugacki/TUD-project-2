@@ -8,10 +8,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Table;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "CLIENT")
+@NamedQueries({
+	@NamedQuery(name = "getAllClients", query = "Select c from Client c"),
+	@NamedQuery(name = "getByPhone", query = "Select c from Client c Where c.phone=?"),
+})
 public class Client implements Serializable{
 	
 	@Id
