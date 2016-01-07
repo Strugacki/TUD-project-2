@@ -43,7 +43,7 @@ public class ClientServiceImpl implements ClientService{
 	}
 	
 	@Override
-	public List<Client> getAllClients(Client client){
+	public List<Client> getAllClients(){
 		return sessionFactory.getCurrentSession().getNamedQuery("getAllClients").list();
 	}
 	
