@@ -180,6 +180,6 @@ public class ProductServiceImplTest {
 		
 		ps.disposeProduct(toCheckClient, toSellProduct);
 		assertNotSame(1,toCheckClient.getProducts());
-		assertEquals(0,toCheckClient.getProducts());
+		assertEquals(true,toCheckClient.getProducts().isEmpty());
 	}
 }
