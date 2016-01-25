@@ -16,6 +16,7 @@ import javax.persistence.GenerationType;
 @Table(name="PRODUCT")
 @NamedQueries({
 	@NamedQuery(name = "getAllProducts", query = "Select p from PRODUCT p"),
+	@NamedQuery(name = "getAvailableProducts", query = "Select p from PRODUCT p Where p.AVAILABLE=true"),
 	@NamedQuery(name = "getProductByBrandName", query = "Select p from PRODUCT p Where p.BRAND_NAME=?"),
 })
 public class Product implements Serializable{
@@ -34,16 +35,20 @@ public class Product implements Serializable{
 	@Column(name="PRICE")
 	private double price;
 
+	@Column(name="AVAILABLE")
+	private boolean available=true;
 	
+
 	public Product(){
 		
 	}
 	
-	public Product(String productName, String brandName, Double price){
+	public Product(String productName, String brandName, Double price, boolean available){
 		super();
 		this.productName=productName;
 		this.brandName=brandName;
 		this.price=price;
+		this.available=available;
 	}
 	
 	
@@ -103,4 +108,17 @@ public class Product implements Serializable{
 		this.price = price;
 	}
 	
+	/**
+	 * @return the available
+	 */
+	public boolean getAvailable() {
+		return available;
+	}
+
+	/**
+	 * @param available the available to set
+	 */
+	public void setAvailable(boolean available) {
+		this.available = available;
+	}
 }	

@@ -1,15 +1,22 @@
 package com.mhallman.SpringHibernate.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Table;
+
+
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 
 @SuppressWarnings("serial")
 @Entity
@@ -34,6 +41,7 @@ public class Client implements Serializable{
 	@Column(name = "PHONE_NUMBER")
 	private String phoneNumber;
 
+	private List<Product> products = new ArrayList<Product>();
 	/**
 	 * Constructor for Client
 	 */
@@ -108,6 +116,23 @@ public class Client implements Serializable{
 	 */
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	public List<Product> getProducts() {
+		return products;
+	}
+	
+	/**
+	 * 
+	 * @param products
+	 */
+	public void setCars(List<Product> products) {
+		this.products = products;
 	}
 	
 	

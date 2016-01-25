@@ -4,9 +4,13 @@ import java.util.List;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mhallman.SpringHibernate.model.Client;
 
+@Transactional
+@Component
 public class ClientServiceImpl implements ClientService{
 
 
@@ -43,6 +47,7 @@ public class ClientServiceImpl implements ClientService{
 	}
 	
 	@Override
+	@SuppressWarnings("unchecked")
 	public List<Client> getAllClients(){
 		return sessionFactory.getCurrentSession().getNamedQuery("getAllClients").list();
 	}

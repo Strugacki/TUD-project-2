@@ -1,12 +1,18 @@
 package com.mhallman.SpringHibernate.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.mhallman.SpringHibernate.model.Client;
 import com.mhallman.SpringHibernate.model.Product;
 
+@Transactional
+@Component
 public class ProductServiceImpl implements ProductService{
 
 	@Autowired
@@ -45,10 +51,16 @@ public class ProductServiceImpl implements ProductService{
 
 
 	@Override
-	public List<Product> getAllProducts(Product product) {
+	@SuppressWarnings("unchecked")
+	public List<Product> getAllProducts() {
 		return sessionFactory.getCurrentSession().getNamedQuery("getAllProducts").list();
 	}
 
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<Product> getAvailableProducts(){
+		return sessionFactory.getCurrentSession().getNamedQuery("getAvailableProducts").list();
+	}
 
 	@Override
 	public Product getProductById(Integer id) {
@@ -57,8 +69,46 @@ public class ProductServiceImpl implements ProductService{
 
 
 	@Override
-	public Product getProductByBrandName(String bName) {
-		return (Product) sessionFactory.getCurrentSession().getNamedQuery("getProductsByBrandName").setString(1, bName);
+	@SuppressWarnings("unchecked")
+	public List<Product> getProductByBrandName(String bName) {
+		return sessionFactory.getCurrentSession().getNamedQuery("getProductsByBrandName").setString(1, bName).list();
+	}
+
+	
+	
+	@Override
+	public void disposeProduct(Client client, Product product) {
+		client = (Client) sessionFactory.getCurrentSession().get(Client.class, client.getId());
+		product = (Product) sessionFactory.getCurrentSession().get(Product.class, product.getId());
+
+		Product toRemove = null;
+		// lazy loading here (person.getCars)
+		for (Product aProduct : client.getProducts())
+			if (aProduct.getId().compareTo(product.getId()) == 0) {
+				toRemove = aProduct;
+				break;
+			}
+		if (toRemove != null)
+			client.getProducts().remove(toRemove);
+		product.setAvailable(false);
+		
+	}
+
+	@Override
+	public List<Product> getSoldProducts(Client client) {
+		client = (Client) sessionFactory.getCurrentSession().get(Client.class, client.getId());
+		
+		List<Product> soldProducts = new ArrayList<Product>(client.getProducts());
+		return soldProducts;
+	}
+
+	@Override
+	public void sellProduct(Long clientId, Long productId) {
+		Client client = (Client) sessionFactory.getCurrentSession().get(Client.class, clientId);
+		Product product = (Product) sessionFactory.getCurrentSession().get(Product.class, productId);
+		product.setAvailable(false);
+		client.getProducts().add(product);
+		
 	}
 
 }

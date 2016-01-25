@@ -10,8 +10,13 @@ public interface ProductService {
 	void addProduct(Product product);
 	void deleteProduct(Product product);
 	void updateProduct(Product product);
-	List<Product> getAllProducts(Product product);
+	List<Product> getAllProducts();
+	List<Product> getAvailableProducts();
 	Product getProductById(Integer id);
-	Product getProductByBrandName(String bName);
+	List<Product> getProductByBrandName(String bName);
+	
+	void disposeProduct(Client client, Product product);
+	List<Product> getSoldProducts(Client client);
+	void sellProduct(Long clientId, Long productId);
 	
 }
