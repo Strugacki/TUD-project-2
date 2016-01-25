@@ -11,8 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mhallman.SpringHibernate.model.Client;
 import com.mhallman.SpringHibernate.model.Product;
 
-@Transactional
 @Component
+@Transactional
 public class ProductServiceImpl implements ProductService{
 
 	@Autowired
@@ -28,7 +28,7 @@ public class ProductServiceImpl implements ProductService{
 	
 	@Override
 	public void addProduct(Product product) {
-		sessionFactory.getCurrentSession().persist(product);
+		sessionFactory.getCurrentSession().save(product);
 		
 	}
 
@@ -63,16 +63,11 @@ public class ProductServiceImpl implements ProductService{
 	}
 
 	@Override
-	public Product getProductById(Integer id) {
+	public Product getProductById(Long id) {
 		return (Product) sessionFactory.getCurrentSession().get(Product.class, id);
 	}
 
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public List<Product> getProductByBrandName(String bName) {
-		return sessionFactory.getCurrentSession().getNamedQuery("getProductsByBrandName").setString(1, bName).list();
-	}
 
 	
 	

@@ -3,9 +3,12 @@ package com.mhallman.SpringHibernate.model;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 import javax.persistence.Column;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.GeneratedValue;
@@ -13,29 +16,21 @@ import javax.persistence.GenerationType;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name="PRODUCT")
 @NamedQueries({
-	@NamedQuery(name = "getAllProducts", query = "Select p from PRODUCT p"),
-	@NamedQuery(name = "getAvailableProducts", query = "Select p from PRODUCT p Where p.AVAILABLE=true"),
-	@NamedQuery(name = "getProductByBrandName", query = "Select p from PRODUCT p Where p.BRAND_NAME=?"),
+	@NamedQuery(name = "getAllProducts", query = "Select p from Product p"),
+	@NamedQuery(name = "getAvailableProducts", query = "Select p from Product p Where p.available=true"),
 })
 public class Product implements Serializable{
 
-	@Id
-	@Column(name="ID")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
 	
-	@Column(name="PRODUCT_NAME")
+	private Long id;
+	
 	private String productName;
 	
-	@Column(name="BRAND_NAME")
 	private String brandName;
 	
-	@Column(name="PRICE")
 	private double price;
 
-	@Column(name="AVAILABLE")
 	private boolean available=true;
 	
 
@@ -55,14 +50,16 @@ public class Product implements Serializable{
 	/**
 	 * @return the id
 	 */
-	public Integer getId() {
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	public Long getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -121,4 +118,5 @@ public class Product implements Serializable{
 	public void setAvailable(boolean available) {
 		this.available = available;
 	}
+	
 }	

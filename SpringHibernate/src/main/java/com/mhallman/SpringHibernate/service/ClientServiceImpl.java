@@ -9,8 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mhallman.SpringHibernate.model.Client;
 
-@Transactional
+
 @Component
+@Transactional
 public class ClientServiceImpl implements ClientService{
 
 
@@ -49,17 +50,12 @@ public class ClientServiceImpl implements ClientService{
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<Client> getAllClients(){
-		return sessionFactory.getCurrentSession().getNamedQuery("getAllClients").list();
+		return sessionFactory.getCurrentSession().getNamedQuery("get.All.Clients").list();
 	}
 	
 	@Override
-	public Client getClientById(Integer id){
+	public Client getClientById(Long id){
 		return (Client) sessionFactory.getCurrentSession().get(Client.class, id);
-	}
-	
-	@Override
-	public Client getClientByPhone(String phone){
-		return (Client) sessionFactory.getCurrentSession().getNamedQuery("getByPhone").setString(1, phone);
 	}
 	
 }

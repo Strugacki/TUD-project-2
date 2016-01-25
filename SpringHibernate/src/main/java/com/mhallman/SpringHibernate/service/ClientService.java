@@ -10,6 +10,5 @@ public interface ClientService {
 	void deleteClient(Client client);
 	void updateClient(Client client);
 	List<Client> getAllClients();
-	Client getClientById(Integer id);
-	Client getClientByPhone(String phone);
+	Client getClientById(Long id);
 }

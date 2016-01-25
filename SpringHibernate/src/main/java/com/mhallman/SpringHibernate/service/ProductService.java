@@ -12,8 +12,7 @@ public interface ProductService {
 	void updateProduct(Product product);
 	List<Product> getAllProducts();
 	List<Product> getAvailableProducts();
-	Product getProductById(Integer id);
-	List<Product> getProductByBrandName(String bName);
+	Product getProductById(Long id);
 	
 	void disposeProduct(Client client, Product product);
 	List<Product> getSoldProducts(Client client);

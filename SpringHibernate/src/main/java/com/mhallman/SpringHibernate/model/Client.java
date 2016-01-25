@@ -20,25 +20,17 @@ import javax.persistence.OneToMany;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "CLIENT")
 @NamedQueries({
-	@NamedQuery(name = "getAllClients", query = "Select c from CLIENT c"),
-	@NamedQuery(name = "getByPhone", query = "Select c from CLIENT c Where c.PHONE_NUMBER=?"),
+	@NamedQuery(name = "get.All.Clients", query = "Select c from Client c"),
 })
 public class Client implements Serializable{
 	
-	@Id
-	@Column(name = "Id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Long id;
 	
-	@Column(name = "FIRST_NAME")
 	private String firstName;
 	
-	@Column(name = "LAST_NAME") 
 	private String lastName;
 	
-	@Column(name = "PHONE_NUMBER")
 	private String phoneNumber;
 
 	private List<Product> products = new ArrayList<Product>();
@@ -65,14 +57,16 @@ public class Client implements Serializable{
 	/**
 	 * @return the id
 	 */
-	public Integer getId() {
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	public Long getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -131,7 +125,7 @@ public class Client implements Serializable{
 	 * 
 	 * @param products
 	 */
-	public void setCars(List<Product> products) {
+	public void setProducts(List<Product> products) {
 		this.products = products;
 	}
 	
