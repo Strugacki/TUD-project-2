@@ -45,7 +45,7 @@
         <prop key="hibernate.show_sql">true</prop>
 			</props>
 		</property>
-		<property name="packagesToScan" value="com.mhallman.SpringHibernate.domain" />
+		<property name="packagesToScan" value="com.mhallman.SpringHibernate.model" />
 	</bean>
 
 	<bean id="txManager"
