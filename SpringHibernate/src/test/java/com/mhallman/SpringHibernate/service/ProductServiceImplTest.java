@@ -23,7 +23,7 @@ import com.mhallman.SpringHibernate.service.ProductService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/beans.xml" })
-@TransactionConfiguration(transactionManager = "txManager", defaultRollback = true)
+@TransactionConfiguration(transactionManager = "txManager", defaultRollback = false)
 @Transactional
 public class ProductServiceImplTest {
 
@@ -51,29 +51,48 @@ public class ProductServiceImplTest {
 	private final String lastName1 = "Urban";
 	private final String phoneNumber1 ="123321123";
 	
+	private List<Product> productsToTest;
+	private List<Client> clientsToTest;
+	
 			
 	@Before
 	public void fill(){
+		productsToTest = new ArrayList<Product>();
+		clientsToTest = new ArrayList<Client>();
 		Product product = new Product(productName,brandName,price,available);
 		ps.addProduct(product);
+		productsToTest.add(product);
 		Product product1 = new Product(productName1,brandName1,price1,available1);
 		ps.addProduct(product1);
+		productsToTest.add(product1);
 		Client client = new Client(firstName,lastName,phoneNumber);
 		cs.addClient(client);
+		clientsToTest.add(client);
 		Client client1 = new Client(firstName1,lastName1,phoneNumber1);
 		cs.addClient(client1);
+		clientsToTest.add(client1);
 	}
 	
 	@After
 	public void clean(){
-		List<Product> products = ps.getAllProducts();
-		List<Client> clients = cs.getAllClients();
+		List<Product> products = new ArrayList<Product>();
+		products.add(ps.getProductById(productsToTest.get(0).getId()));
+		products.add(ps.getProductById(productsToTest.get(1).getId()));
+		
+		List<Client> clients = new ArrayList<Client>();
+		clients.add(cs.getClientById(clientsToTest.get(0).getId()));
+		clients.add(cs.getClientById(clientsToTest.get(1).getId()));
+		
 		for(Client client : clients){
 			for(Product product : client.getProducts()){
 				product.setAvailable(true);
+				
 			}
 			client.getProducts().clear();
 			cs.deleteClient(client);
+		}
+		for(Product productt : products){
+			ps.deleteProduct(productt);
 		}
 	}
 	
@@ -81,20 +100,18 @@ public class ProductServiceImplTest {
 	@Test
 	public void checkGetById(){
 		
-		Product product = new Product(productName,brandName,price,available);
+		Product byId = ps.getProductById(productsToTest.get(0).getId());
 		
-		ps.addProduct(product);
-		
-		Product added = ps.getProductById(product.getId());
-		
-		assertEquals(productName,added.getProductName());
-		assertEquals(brandName,added.getBrandName());
-		assertEquals(available,added.getAvailable());
+		assertEquals(productName,byId.getProductName());
+		assertEquals(brandName,byId.getBrandName());
+		assertEquals(available,byId.getAvailable());
 	}
 	
 	@Test
 	public void checkAdding(){
-		List<Product> products = ps.getAllProducts();
+		List<Product> products = new ArrayList<Product>();
+		products.add(ps.getProductById(productsToTest.get(0).getId()));
+		products.add(ps.getProductById(productsToTest.get(1).getId()));
 		Product toCheck = products.get(0);
 		
 		assertEquals(productName,toCheck.getProductName());
@@ -105,24 +122,28 @@ public class ProductServiceImplTest {
 	
 	@Test
 	public void checkDeleting(){
-		List<Product> products = ps.getAllProducts();
-		Product toCheck = ps.getProductById(products.get(0).getId());
-		int size = ps.getAllProducts().size();
+		Product toDelete = new Product(productName1,brandName1,22.00,true);
+		ps.addProduct(toDelete);
 		
-		assertEquals(productName,toCheck.getProductName());
-		assertEquals(brandName,toCheck.getBrandName());
-		assertEquals(size,2);
+		Product toCheck = ps.getProductById(toDelete.getId());
+		
+		int size = ps.getAllProducts().size();
+		assertEquals(productName1,toCheck.getProductName());
+		assertEquals(brandName1,toCheck.getBrandName());
 		
 		ps.deleteProduct(toCheck);
-		size = ps.getAllProducts().size();
-		assertEquals(size,1);
+		
+		int afterDeleteSize = ps.getAllProducts().size();
+		assertNotSame(size,afterDeleteSize);
 		assertNull(ps.getProductById(toCheck.getId()));
 	}
 	
 	
 	@Test
 	public void checkUpdating(){
-		List<Product> products = ps.getAllProducts();
+		List<Product> products = new ArrayList<Product>();
+		products.add(ps.getProductById(productsToTest.get(0).getId()));
+		products.add(ps.getProductById(productsToTest.get(1).getId()));
 		Product toCheck = ps.getProductById(products.get(0).getId());
 		
 		assertEquals(productName,toCheck.getProductName());
@@ -137,7 +158,9 @@ public class ProductServiceImplTest {
 	
 	@Test
 	public void checkGettingAll(){
-		List<Product> products = ps.getAllProducts();
+		List<Product> products = new ArrayList<Product>();
+		products.add(ps.getProductById(productsToTest.get(0).getId()));
+		products.add(ps.getProductById(productsToTest.get(1).getId()));
 		int size = products.size();
 		assertEquals(size,2);
 		assertEquals(productName,products.get(0).getProductName());
@@ -146,27 +169,34 @@ public class ProductServiceImplTest {
 	
 	@Test
 	public void checkSellingAndAvailablity(){
-		List<Product> products = ps.getAllProducts();
-		List<Client> clients = cs.getAllClients();
+		List<Product> products = new ArrayList<Product>();
+		products.add(ps.getProductById(productsToTest.get(0).getId()));
+		products.add(ps.getProductById(productsToTest.get(1).getId()));
+		List<Client> clients = new ArrayList<Client>();
+		clients.add(cs.getClientById(clientsToTest.get(0).getId()));
+		clients.add(cs.getClientById(clientsToTest.get(1).getId()));
 		
 		Client toCheckClient = clients.get(0);
 		Product toCheckProduct = products.get(0);
 		
-		assertEquals(2,ps.getAllProducts().size());
-		toCheckClient.setProducts(products);
+		//assertEquals(2,ps.getAllProducts().size());
 		for(Product product : products){
-			product.setAvailable(false);
+			ps.sellProduct(toCheckClient.getId(), product.getId());
 		}
 		
 		assertEquals(2,toCheckClient.getProducts().size());
 		assertEquals(false,ps.getProductById(toCheckProduct.getId()).getAvailable());
-		assertEquals(0,ps.getAvailableProducts().size());
+		assertNotSame(ps.getAllProducts(),ps.getAvailableProducts());
 	}
 	
 	@Test
 	public void checkGettingBoughtAndDispose(){
-		List<Product> products = ps.getAllProducts();
-		List<Client> clients = cs.getAllClients();
+		List<Product> products = new ArrayList<Product>();
+		products.add(ps.getProductById(productsToTest.get(0).getId()));
+		products.add(ps.getProductById(productsToTest.get(1).getId()));
+		List<Client> clients = new ArrayList<Client>();
+		clients.add(cs.getClientById(clientsToTest.get(0).getId()));
+		clients.add(cs.getClientById(clientsToTest.get(1).getId()));
 		List<Product> boughtProducts;
 		
 		Client toCheckClient = clients.get(0);
